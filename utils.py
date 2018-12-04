@@ -200,6 +200,12 @@ def word(m):
     except AttributeError:
         pass
 
+def capitalized_word(m):
+    try:
+        text = join_words(list(map(parse_word, m.dgnwords[0]._words)))
+        insert(text.capitalize())
+    except AttributeError:
+        pass
 
 def surround(by):
     def func(i, word, last):

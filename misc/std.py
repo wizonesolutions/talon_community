@@ -5,7 +5,7 @@ from talon import ctrl, clip
 from talon_init import TALON_HOME, TALON_PLUGINS, TALON_USER
 import string
 
-from ..utils import parse_word, surround, text, sentence_text, word, parse_words
+from ..utils import parse_word, surround, text, sentence_text, word, parse_words, capitalized_word
 from .basic_keys import alpha_alt
 
 
@@ -271,5 +271,20 @@ ctx.keymap(
         "launcher": Key("cmd-space"),
         "prefies": Key("cmd-,"),
         "put computer to sleep": lambda m: os.system("pmset sleepnow"),
+
+        # wizonesolutions custom
+        'awesome <dgnwords>': capitalized_word,
+        'dub get': 'wget ',
+        'run cat': 'cat ',
+        'fast forward git': 'git pull --ff-only',
+        'code tag': '<code></code>',
+        'sparrow': '=>',
+        'op sparrow': ' => ',
+        'code tick': '```',
+        'state is set': 'isset',
+
+        'D dev S S H': ['ddev ssh', Key('enter')],
+        'drewsh enable': 'drush en ',
+        'drewsh see are': 'drush cr',
     }
 )
