@@ -274,6 +274,10 @@ ctx.keymap(
 
         # wizonesolutions custom
         'awesome <dgnwords>': capitalized_word,
+
+        'nudge down': [Key('down')] * 15,
+        'nudge up': [Key('up')] * 15,
+
         'dub get': 'wget ',
         'run cat': 'cat ',
         'fast forward git': 'git pull --ff-only',
