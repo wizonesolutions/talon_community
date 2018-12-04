@@ -33,15 +33,15 @@ symbols = {
     'semi': ';', 'semicolon': ';',
     'quote': "'",
     'L square': '[', 'left square': '[', 'left square bracket': '[', 'square': '[',
-    'R square': ']', 'right square': ']', 'right square bracket': ']',
+    'R square': ']', 'right square': ']', 'right square bracket': ']', 'squall': ']',
     'forward slash': '/', 'slash': '/',
     'backslash': '\\',
     'minus': '-', 'dash': '-',
     'equals': '=',
 }
 modifiers = {
-    'command': 'cmd',
-    'control': 'ctrl',
+    'command': 'cmd', 'calm': 'cmd',
+    'control': 'ctrl', 'troll': 'ctrl',
     'shift': 'shift',
     'alt': 'alt',
     'option': 'alt',
