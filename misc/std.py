@@ -5,7 +5,7 @@ from talon import ctrl, clip
 from talon_init import TALON_HOME, TALON_PLUGINS, TALON_USER
 import string
 
-from ..utils import parse_word, surround, text, sentence_text, word, parse_words, capitalized_word
+from ..utils import parse_word, surround, text, sentence_text, word, parse_words, capitalized_word, spoken_text
 from .basic_keys import alpha_alt
 
 
@@ -89,7 +89,7 @@ ctx.keymap(
     {
         "say <dgndictation> [over]": text,
         "sentence <dgndictation> [over]": sentence_text,
-        "comma <dgndictation> [over]": [", ", text],
+        "comma <dgndictation> [over]": [", ", spoken_text],
         "period <dgndictation> [over]": [". ", sentence_text],
         # "more <dgndictation> [over]": [" ", text],
         "word <dgnwords>": word,
