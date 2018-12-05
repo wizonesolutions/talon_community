@@ -88,6 +88,7 @@ ctx = Context("input")
 ctx.keymap(
     {
         "say <dgndictation> [over]": text,
+        "speak <dgndictation> [over]": spoken_text,
         "sentence <dgndictation> [over]": sentence_text,
         "comma <dgndictation> [over]": [", ", spoken_text],
         "period <dgndictation> [over]": [". ", sentence_text],
