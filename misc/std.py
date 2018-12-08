@@ -5,7 +5,7 @@ from talon import ctrl, clip
 from talon_init import TALON_HOME, TALON_PLUGINS, TALON_USER
 import string
 
-from ..utils import parse_word, surround, text, sentence_text, word, parse_words, capitalized_word, spoken_text
+from ..utils import parse_word, surround, text, sentence_text, word, parse_words, spoken_text, capitalized_word
 from .basic_keys import alpha_alt
 
 
