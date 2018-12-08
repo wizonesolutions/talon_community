@@ -61,8 +61,8 @@ ctx.keymap(
     {
         "(address bar | focus address | focus url | url)": focus_address_bar,
         "copy url": Key("escape y y"),
-        "back[ward]": back,
-        "forward": forward,
+        "(go back | backward)": back,
+        "go forward": forward,
         "reload": Key("cmd-r"),
         "hard reload": Key("cmd-shift-r"),
         "new tab": Key("cmd-t"),
