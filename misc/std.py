@@ -214,7 +214,7 @@ ctx.keymap(
         "state past": "pass",
         "plus": "+",
         "arrow": "->",
-        "call": "()",
+        "call": "",  # do nothing, since this matches too often
         "indirect": "&",
         "dereference": "*",
         "(op equals | assign | equeft)": " = ",
