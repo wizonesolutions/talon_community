@@ -40,9 +40,9 @@ ctx.keymap({
     "fox signal": lambda x: switch_app(x, "Signal"),
 
     # wizonesolutions custom
-    "focus iterm": lambda x: switch_app(x, "iTerm2"),
+    "focus eye term": lambda x: switch_app(x, "iTerm2"),
     "focus PHP storm": lambda x: switch_app(x, "PhpStorm"),
-    "focus PHPStorm": lambda x: switch_app(x, "PhpStorm"),
+    "focus P H P storm": lambda x: switch_app(x, "PhpStorm"),
 })
 
 def update_lists():
