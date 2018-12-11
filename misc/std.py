@@ -97,7 +97,6 @@ ctx.keymap(
         "(%s)+ <dgndictation> [over]" % (" | ".join(formatters)): FormatText,
         "tarpy": [Key("tab"), Key("tab")],
         "trough": Key("alt-backspace"),
-        "slap": [Key("cmd-right enter")],
         "sky shock": Key("shift-enter"),
         "question [mark]": "?",
         "tilde": "~",
