@@ -43,6 +43,7 @@ ctx.keymap({
     "focus eye term": lambda x: switch_app(x, "iTerm2"),
     "focus PHP storm": lambda x: switch_app(x, "PhpStorm"),
     "focus P H P storm": lambda x: switch_app(x, "PhpStorm"),
+    "focus spot a fly": lambda x: switch_app(x, "Spotify"),
 })
 
 def update_lists():
