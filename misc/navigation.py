@@ -26,7 +26,6 @@ keymap = {
     "slurp": Key("backspace delete"),
     "slurpies": Key("alt-backspace alt-delete"),
     # moving
-    "tarp": Key("tab"),
     "tarsh": Key("shift-tab"),
     "shocker": [Key("cmd-left enter up")],
     "wonkrim": Key("alt-ctrl-left"),
@@ -79,8 +78,6 @@ keymap = {
     "slurp": Key("backspace delete"),
     "trough": Key("alt-backspace"),
     # moving
-    # '(tab | tarp)': Key('tab'),
-    "tarp": Key("tab"),
     "tarsh": Key("shift-tab"),
     "slap": [Key("cmd-right enter")],
     "peg": Key("alt-left"),

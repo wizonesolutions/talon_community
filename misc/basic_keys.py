@@ -17,14 +17,6 @@ alternate_keys = {
     'delete': 'backspace',
     'forward delete': 'delete',
 
-    # voicecode alternates
-    'tarp': 'tab',
-    'crimp': 'left',
-    'chris': 'right',
-    'jeep': 'up',
-    'doom': 'down',
-    'junk': 'backspace',
-    'shock': 'enter',
 }
 symbols = {
     'back tick': '`', 'tick': '`',
