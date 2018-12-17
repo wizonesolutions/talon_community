@@ -10,7 +10,6 @@ keymap = {
     "tilde": "~",
     "(bang | exclamation point | clamor)": "!",
     "(dollar [sign] | dolly)": "$",
-    "(downscore | crunder)": "_",
     "(semi | semicolon | sunk)": ";",
     "colon": ":",
     "(square | left square [bracket] | brackorp)": "[",
