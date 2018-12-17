@@ -88,14 +88,14 @@ def mouse_release(m):
 keymap = {
     # jsc modified with some voice-code compatibility
     "righty": delayed_right_click,
-    "(click | chiff)": delayed_click,
+    "click": delayed_click,
     "(dubclick | duke)": delayed_dubclick,
     "(tripclick | triplick)": delayed_tripclick,
     "drag": mouse_drag,
     "release": mouse_release,
     # jsc added
-    "(shift click | shicks)": shift_click,
-    "(command click | chom lick)": command_click,
+    "shift click": shift_click,
+    "command click": command_click,
     "wheel down": mouse_scroll(200),
     "wheel up": mouse_scroll(-200),
 }
