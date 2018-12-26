@@ -277,6 +277,7 @@ keymap = {
     "remove [matching] (bracket | brackets)": command(
         "bracket-matcher:remove-matching-brackets"
     ),
+    "select in quotes": command("expand-selection-quotes"),
     "quinn" + "({})".format(" | ".join(snippets.keys())): code_snippet,
     # '({})'.format(' | '.join(snippets.keys())): code_snippet_naked,
     # python
@@ -313,6 +314,8 @@ keymap = {
     # project
     "add project": command("application:add-project-folder"),
     "remove project": command("tree view remove project folder"),
+    # blacken
+    "blacken": command("atom black blacken"),
 }
 
 ctx.keymap(keymap)

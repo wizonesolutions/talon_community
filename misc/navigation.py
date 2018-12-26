@@ -22,9 +22,9 @@ keymap = {
     "carmex": Key("alt-backspace"),
     "kite": Key("alt-delete"),
     "snipple": Key("cmd-shift-left delete"),
-    "snipper": Key("cmd-shift-right delete"),
+    "(delete this line | snipper)": Key("cmd-shift-right delete"),
     "slurp": Key("backspace delete"),
-    "slurpies": Key("alt-backspace alt-delete"),
+    "(delete this word | slurpies)": Key("alt-backspace alt-delete"),
     # moving
     "tarsh": Key("shift-tab"),
     "shocker": [Key("cmd-left enter up")],
