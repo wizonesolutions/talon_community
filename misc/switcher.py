@@ -53,7 +53,7 @@ def update_lists():
     for app in ui.apps():
         if app.background and not app.windows():
             continue
-        words = app.name.split(' ')
+        words = app.name.lower().split(' ')
         for word in words:
             if word and not word in new:
                 new[word] = app.name
@@ -65,7 +65,7 @@ def update_lists():
     for base in '/Applications', '/Applications/Utilities':
         for name in os.listdir(base):
             path = os.path.join(base, name)
-            name = name.rsplit('.', 1)[0]
+            name = name.rsplit('.', 1)[0].lower()
             new[name] = path
             words = name.split(' ')
             for word in words:
