@@ -28,7 +28,7 @@ ctx_network_graph = Context("github-network-graph",
 repos = {"talon_community"}
 
 lag = 0.2
-using_tridactyl = True
+using_tridactyl = False
 
 
 def in_repo_list(win_title):
