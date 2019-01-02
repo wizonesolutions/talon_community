@@ -267,7 +267,7 @@ ctx_repo.keymap(
 
 ctx_editor.keymap(
     {
-        '(search | find)': Key('cmd-f'),
+        'go find': Key('cmd-f'),
         '[find] next': Key('cmd-g'),
         '[find] prev': Key('shift-cmd-g'),
         'replace': Key('cmd-alt-f'),

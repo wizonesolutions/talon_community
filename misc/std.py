@@ -258,7 +258,7 @@ ctx.keymap(
         "last space": Key("cmd-alt-ctrl-left"),
         "scroll down": [Key("down")] * 30,
         "scroll up": [Key("up")] * 30,
-        "(marco | search)": Key("cmd-f"),
+        "go find": Key("cmd-f"),
         "marneck": Key("cmd-g"),
         "marpreev": Key("cmd-shift-g"),
         "marthis": [
