@@ -118,7 +118,6 @@ ctx.keymap(
         "triple quote": "'''",
         "ricky": Key("ctrl-e"),
         "lefty": Key("ctrl-a"),
-        "olly | ali": Key("cmd-a"),
         "(dot dot | dotdot)": "..",
         "(dot dot dot | dotdotdot)": "...",
         "cd talon home": "cd {}".format(TALON_HOME),
