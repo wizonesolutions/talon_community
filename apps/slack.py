@@ -24,7 +24,7 @@ keymap = {
     "((open | collapse) right pane | toggle sidebar)": Key("cmd-."),
     "direct messages": Key("cmd-shift-k"),
     "(unread threads | new threads | threads)": Key("cmd-shift-t"),
-    "(history [next] | go back | backward | baxley)": Key("cmd-["),
+    "(history [next] | go back | [go] backward | baxley)": Key("cmd-["),
     "(back to the future | ford | go forward | fourthly)": Key("cmd-]"),
     "next element": Key("tab"),
     "previous element": Key("shift-tab"),

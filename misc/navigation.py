@@ -9,7 +9,6 @@ keymap = {
     # -> "Select the previous input source"
     "change language": Key("ctrl-space"),
     # Application navigation
-    "swick": Key("cmd-tab"),
     "new window": Key("cmd-n"),
     "(next window | gibby)": Key("cmd-`"),
     "(last window | shibby)": Key("cmd-shift-`"),
@@ -43,6 +42,7 @@ keymap = {
     "scroll up": [Key("up")] * 30,
     "(jeepway | scroll way up)": Key("cmd-up"),
     # selecting
+    "olly | ali": Key("cmd-a"),
     "shreepway": Key("cmd-shift-up"),
     "shroomway": Key("cmd-shift-down"),
     "shreep": Key("shift-up"),
@@ -53,7 +53,8 @@ keymap = {
     "(shrish | shift right)": Key("shift-right"),
     # Application navigation
     "launcher": Key("cmd-space"),
-    "swick": Key("cmd-tab"),
+    "next app": Key("cmd-tab"),
+    "last app": Key("cmd-shift-tab"),
     "close tab": Key("cmd-w"),
     "close window": Key("cmd-shift-w"),
     "mission": lambda m: system("open -a 'Mission Control'"),
@@ -61,8 +62,8 @@ keymap = {
     "curtail": Key("cmd-m"),
     "(next window | gibby)": Key("cmd-`"),
     "(last window | shibby)": Key("cmd-shift-`"),
-    "window space right": Key("cmd-alt-ctrl-right"),
-    "window space left": Key("cmd-alt-ctrl-left"),
+    "(window space right | next space)": Key("cmd-alt-ctrl-right"),
+    "(window space left | last space)": Key("cmd-alt-ctrl-left"),
     # 'scroll down': [Key('down')] * 30,
     "page up": [Key("pageup")],
     # 'scroll up': [Key('up')] * 30,
@@ -111,6 +112,11 @@ keymap = {
     "shrocky": Key("alt-shift-right"),
     "shlicky": Key("shift-left"),
     "shricky": Key("shift-right"),
+    # searching
+    "(marco | search)": Key("cmd-f"),
+    "marneck": Key("cmd-g"),
+    "marpreev": Key("cmd-shift-g"),
+    "marthis": [Key("alt-right"), Key("shift-alt-left"), Key("cmd-f"), Key("enter")],
 }
 
 ctx.keymap(keymap)

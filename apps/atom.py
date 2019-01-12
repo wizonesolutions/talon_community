@@ -1,7 +1,6 @@
 import time
 
 from talon.voice import Key, press, Str, Context, Rule
-from ..misc import std
 from ..utils import (
     parse_words_as_integer,
     parse_words,
@@ -241,6 +240,7 @@ keymap = {
     "move line" + numerals: move_line,
     "crew <dgndictation>": find_next,
     "trail <dgndictation>": find_previous,
+    "replace next": Key('cmd-alt-e'),
     "shackle": Key("cmd-l"),
     "selrang" + numerals: select_lines,
     "shockey": Key("cmd-shift-enter"),
@@ -261,6 +261,7 @@ keymap = {
     "split pain up": [Key("cmd-k"), Key("up")],
     "split pain down": [Key("cmd-k"), Key("down")],
     "(search all files | mark all)": Key("cmd-shift-f"),
+    "case sensitive": Key('alt-cmd-c'),
     "command pallet": Key(atom_command_pallet),
     "cursor center": command("center-line:toggle"),
     "cursor top": [command("center-line:toggle"), command("center-line:toggle")],

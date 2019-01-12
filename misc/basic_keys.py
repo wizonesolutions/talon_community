@@ -11,14 +11,16 @@ simple_keys = [
     'home', 'pageup', 'pagedown', 'end',
 ]
 alternate_keys = {
-
-
     'backspace': 'backspace',
     'delete': 'backspace',
     'forward delete': 'delete',
 
 }
 symbols = {
+    # NOTE:  This should only contain symbols that do not require any modifier
+    # keys to press on a standard US keyboard layout. Commands for keys that do
+    # require modifiers (e.g. ``"caret": "^"`) should belong in
+    # ``text/symbol.py``.
     'back tick': '`', 'tick': '`',
     'comma': ',',
     'dot': '.', 'period': '.',
