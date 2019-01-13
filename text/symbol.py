@@ -10,7 +10,7 @@ keymap = {
     "tilde": "~",
     "(bang | exclamation point | clamor)": "!",
     "(dollar [sign] | dolly)": "$",
-    "(downscore | crunder)": "_",
+    "downscore": "_",
     "(semi | semicolon | sunk)": ";",
     "colon": ":",
     "(square | left square [bracket] | brackorp)": "[",
@@ -84,7 +84,6 @@ keymap = {
     "(enter | shock)": Key("enter"),
     "junk": Key("backspace"),
     "spunk": Key("delete"),
-    "downscore": "_",
 }
 
 ctx.keymap(keymap)
