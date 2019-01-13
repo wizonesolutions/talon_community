@@ -78,12 +78,12 @@ keymap = {
     "precoif": ['("")', Key("left"), Key("left")],
     "prex": ["()", Key("left")],
     "posh": ["''", Key("left")],
-    #'padded': (False, surround(" "), 1),
     "and sign": "&",
     "(dot dot | dotdot | doodle)": "..",
     "(enter | shock)": Key("enter"),
     "junk": Key("backspace"),
     "spunk": Key("delete"),
+    "downscore": "_",
 }
 
 ctx.keymap(keymap)
