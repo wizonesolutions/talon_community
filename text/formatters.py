@@ -85,7 +85,7 @@ def FormatText(m):
 ctx = Context("formatters")
 
 ctx.keymap({
-    "phrase <dgndictation> [over]": text,
+    "say <dgndictation> [over]": text,
     "sentence <dgndictation> [over]": sentence_text,
     "comma <dgndictation> [over]": [", ", spoken_text],
     "period <dgndictation> [over]": [". ", sentence_text],
