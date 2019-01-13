@@ -262,26 +262,8 @@ def word_prev(m):
 
 
 ctx.keymap({
-    # 'sprinkle' + optional_numerals: jump_to_bol,
-    # 'spring' + optional_numerals: jump_to_eol_and(jump_to_beginning_of_text),
-    # 'dear' + optional_numerals: jump_to_eol_and(lambda: None),
-    # 'smear' + optional_numerals: jump_to_eol_and(jump_to_nearly_end_of_line),
-    # 'trundle' + optional_numerals: jump_to_bol_and(toggle_comments),
-    # 'jolt': Key('ctrl-a cmd-left shift-down cmd-c down cmd-v' ),		# jsc simplified
-    # 'snipline' + optional_numerals: jump_to_bol_and(snipline),
-    # NB these do not work properly if there is a selection
-    "snipple": Key("shift-cmd-left delete"),
-    "snipper": Key("shift-cmd-right delete"),
-    "shackle": Key("cmd-right shift-cmd-left"),
-    "crew <dgndictation>": select_text_to_right_of_cursor,
-    "trail <dgndictation>": select_text_to_left_of_cursor,
     "shift home": Key("shift-home"),
-    "wordneck" + optional_numerals: word_neck,
-    "wordprev" + optional_numerals: word_prev,
     "word this": [Key("alt-right"), Key("shift-alt-left")],
-    "shockey": Key("ctrl-a cmd-left enter up"),
-    "shockoon": Key("cmd-right enter"),
-    # 'sprinkoon' + numerals: jump_to_eol_and(lambda: press('enter')),
-    "(indent | shabble)": Key("cmd-["),
-    "(outdent | shabber)": Key("cmd-]"),
+    "indent": Key("cmd-["),
+    "outdent": Key("cmd-]"),
 })

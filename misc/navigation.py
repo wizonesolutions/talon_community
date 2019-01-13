@@ -10,8 +10,8 @@ keymap = {
     "change language": Key("ctrl-space"),
     # Application navigation
     "new window": Key("cmd-n"),
-    "(next window | gibby)": Key("cmd-`"),
-    "(last window | shibby)": Key("cmd-shift-`"),
+    "next window": Key("cmd-`"),
+    "last window": Key("cmd-shift-`"),
     "next space": Key("cmd-alt-ctrl-right"),
     "last space": Key("cmd-alt-ctrl-left"),
     # deleting

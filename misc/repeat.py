@@ -27,6 +27,6 @@ ctx.keymap(
         "trace": Rep(3),
         "quarr": Rep(4),
         "fypes": Rep(5),
-        "(repeat | repple)" + utils.numerals: repeat,
+        "repeat" + utils.numerals: repeat,
     }
 )
