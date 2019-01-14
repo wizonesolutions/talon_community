@@ -25,9 +25,10 @@ ctx.keymap({
 
     # window management
     'snap wide screen':            grid(2, 1, 3, 6, 2, 5),
-    'snap first short':            grid(1, 1, 3, 6, 1, 5),
-    'snap mid short':              grid(2, 1, 3, 6, 1, 5),
-    'snap third short':            grid(3, 1, 3, 6, 1, 5),
+    'snap wide cent':              grid(2, 1, 6, 6, 4, 5),
+    'snap short first':            grid(1, 1, 3, 6, 1, 5),
+    'snap short cent':             grid(2, 1, 3, 6, 1, 5),
+    'snap short third':            grid(3, 1, 3, 6, 1, 5),
 
     # jetbrains
     'open file':                   idea('action GotoFile'),
