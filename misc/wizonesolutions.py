@@ -1,6 +1,7 @@
 from talon.voice import Context, Key
 from ..utils import capitalized_word, spoken_text
 from .window_management import grid
+from .jetbrains import idea
 
 ctx = Context('wizonesolutions')
 ctx.keymap({
@@ -22,8 +23,12 @@ ctx.keymap({
     'drewsh enable':               'drush en ',
     'drewsh see are':              'drush cr',
 
+    # window management
     'snap wide screen':            grid(2, 1, 3, 6, 2, 5),
     'snap first short':            grid(1, 1, 3, 6, 1, 5),
     'snap mid short':              grid(2, 1, 3, 6, 1, 5),
     'snap third short':            grid(3, 1, 3, 6, 1, 5),
+
+    # jetbrains
+    'open file':                   idea('action GotoFile'),
 })
