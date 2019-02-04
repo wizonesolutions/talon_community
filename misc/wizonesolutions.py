@@ -1,7 +1,8 @@
-from talon.voice import Context, Key
+from talon.voice import Context, Key, app
 from ..utils import capitalized_word, spoken_text
 from .window_management import grid
 from .jetbrains import idea
+from talon_plugins import speech
 
 ctx = Context('wizonesolutions')
 ctx.keymap({
@@ -33,3 +34,11 @@ ctx.keymap({
     # jetbrains
     'open file':                   idea('action GotoFile'),
 })
+
+
+def disable_speech_on_start():
+    # Disable speech recognition on startup.
+    speech.set_enabled(False)
+
+
+app.register('launch', disable_speech_on_start)
