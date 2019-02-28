@@ -1,13 +1,15 @@
 import string
 import collections
-import itertools
 
 from talon import clip
-from talon.voice import Str, Key, press
+from talon.voice import Str, press
 from time import sleep
 import json
 import os
 
+from .bundle_groups import TERMINAL_BUNDLES, FILETYPE_SENSITIVE_BUNDLES
+
+VIM_IDENTIFIER = "(Vim)"
 
 mapping = json.load(open(os.path.join(os.path.dirname(__file__), "replace_words.json")))
 mappings = collections.defaultdict(dict)
@@ -17,13 +19,14 @@ for k, v in mapping.items():
 punctuation = set(".,-!?")
 
 
+def local_filename(file, name):
+    return os.path.join(os.path.dirname(os.path.realpath(file)), name)
+
+
 def parse_word(word, force_lowercase=True):
-    word = str(word).lstrip("\\").split("\\", 1)[0]
     if force_lowercase:
         word = word.lower()
-    # print(word)
     word = mapping.get(word, word)
-    # print(word)
 
     return word
 
@@ -48,6 +51,10 @@ def replace_words(words, mapping, count):
     return new_words
 
 
+def remove_dragon_junk(word):
+    return str(word).lstrip("\\").split("\\", 1)[0]
+
+
 def parse_words(m, natural=False):
     if isinstance(m, list):
         words = m
@@ -56,9 +63,13 @@ def parse_words(m, natural=False):
     else:
         return []
 
+    # split compound words like "pro forma" into two words.
+    words = list(map(remove_dragon_junk, words))
+    words = sum([word.split(" ") for word in words], [])
     words = list(map(lambda current_word: parse_word(current_word, not natural), words))
     words = replace_words(words, mappings[2], 2)
     words = replace_words(words, mappings[3], 3)
+    words = replace_words(words, mappings[4], 4)
     return words
 
 
@@ -133,8 +144,9 @@ for n in range(1000, 10001, 1000):
 numeral_map["oh"] = 0  # synonym for zero
 numeral_map["and"] = None  # drop me
 
-numerals = " (" + " | ".join(sorted(numeral_map.keys())) + ")+"
-optional_numerals = " (" + " | ".join(sorted(numeral_map.keys())) + ")*"
+numeral_list = sorted(numeral_map.keys())
+numerals = " (" + " | ".join(numeral_list) + ")+"
+optional_numerals = " (" + " | ".join(numeral_list) + ")*"
 
 
 def text_to_number(words):
@@ -238,22 +250,31 @@ def optional(options):
     return " (" + " | ".join(sorted(map(str, options))) + ")*"
 
 
-numeral_map = dict((str(n), n) for n in range(0, 20))
-for n in [20, 30, 40, 50, 60, 70, 80, 90]:
-    numeral_map[str(n)] = n
-numeral_map["oh"] = 0  # synonym for zero
-
-numerals = " (" + " | ".join(sorted(numeral_map.keys())) + ")+"
-optional_numerals = " (" + " | ".join(sorted(numeral_map.keys())) + ")*"
-
-
 def preserve_clipboard(fn):
     def wrapped_function(*args, **kwargs):
         old = clip.get()
-        fn(*args, **kwargs)
+        ret = fn(*args, **kwargs)
+        sleep(0.1)
         clip.set(old)
+        return ret
 
     return wrapped_function
+
+
+# @preserve_clipboard
+def paste_text(text):
+    with clip.revert():
+        clip.set(text)
+        # sleep(0.1)
+        press("cmd-v")
+        sleep(0.1)
+
+
+@preserve_clipboard
+def copy_selected():
+    press("cmd-c")
+    sleep(0.25)
+    return clip.get()
 
 
 # The. following function is used to be able to repeat commands by following it by one or several numbers, e.g.:
@@ -262,7 +283,7 @@ def repeat_function(numberOfWordsBeforeNumber, keyCode, delay=0):
     def repeater(m):
         line_number = parse_words_as_integer(m._words[numberOfWordsBeforeNumber:])
 
-        if line_number == None:
+        if line_number is None:
             line_number = 1
 
         for i in range(0, line_number):
@@ -274,3 +295,38 @@ def repeat_function(numberOfWordsBeforeNumber, keyCode, delay=0):
 
 def delay(amount=0.1):
     return lambda _: sleep(amount)
+
+
+def is_in_bundles(bundles):
+    return lambda app, win: any(b in app.bundle for b in bundles)
+
+
+def is_vim(app, win):
+    if is_in_bundles(TERMINAL_BUNDLES)(app, win):
+        if VIM_IDENTIFIER in win.title:
+            return True
+    return False
+
+
+def is_not_vim(app, win):
+    return not is_vim(app, win)
+
+
+def is_filetype(extensions=()):
+    def matcher(app, win):
+        if is_in_bundles(FILETYPE_SENSITIVE_BUNDLES)(app, win):
+            if any(ext in win.title for ext in extensions):
+                return True
+            else:
+                return False
+        return True
+
+    return matcher
+
+
+def extract_num_from_m(m):
+    # loop identifies numbers in any message
+    number_words = [w for w in m._words if w in numeral_list]
+    if len(number_words) == 0:
+        raise ValueError("No number found")
+    return text_to_number(number_words)

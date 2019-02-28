@@ -1,16 +1,12 @@
-from talon.voice import Context, Key, Str
-from ..utils import alternatives, parse_word
+from talon.voice import Context, Str
+from ..utils import alternatives
 
 ctx = Context("words")
 
 
-last_word = None
-
-
 def shrink_word(m):
     word = str(m._words[1])
-    if not word in shrink_map:
-        last_word = word
+    if word not in shrink_map:
         raise Exception("%s not in shrink map" % word)
     Str(shrink_map[word])(None)
 
@@ -58,6 +54,7 @@ shrink_map = {
     "convolution": "conv",
     "deconvolution": "deconv",
     "derivative": "deriv",
+    "destination": "dest",
     "distribution": "dist",
     "contribute": "contrib",
     "delete": "del",
@@ -111,6 +108,7 @@ shrink_map = {
     "develop": "dev",
     "developer": "dev",
     "development": "dev",
+    "dictionary": "dict",
     "directory": "dir",
     "divider": "div",
     "document": "doc",
@@ -168,6 +166,7 @@ shrink_map = {
     "utility": "util",
     "value": "val",
     "variable": "var",
+    "velocity": "vel",
     # months,
     "january": "jan",
     "february": "feb",
@@ -180,7 +179,6 @@ shrink_map = {
     "october": "oct",
     "november": "nov",
     "december": "dec",
-    "dictionary": "dict",
 }
 
 ctx.keymap({"shrink" + alternatives(shrink_map.keys()): shrink_word})

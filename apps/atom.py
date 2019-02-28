@@ -1,4 +1,5 @@
 import time
+import re
 
 from talon.voice import Key, press, Str, Context, Rule
 from ..utils import (
@@ -10,6 +11,7 @@ from ..utils import (
     text,
     m_to_number,
 )
+from .. import utils
 
 ctx = Context("atom", bundle="com.github.atom")
 
@@ -163,9 +165,9 @@ def change_pain(m):
 
 def command_from_palette(command):
     press(atom_command_pallet)
-    time.sleep(0.25)
-    Str(command)(None)
-    time.sleep(0.25)
+    time.sleep(0.2)
+    utils.paste_text(command)
+    time.sleep(0.1)
     press("enter")
 
 
@@ -180,7 +182,7 @@ def jump_tab(m, tab_number=None):
     if tab_number is None:
         tab_number = parse_words_as_integer(m._words[1:])
 
-    if tab_number != None and tab_number > 0 and tab_number < 10:
+    if tab_number is not None and tab_number > 0 and tab_number < 10:
         press("cmd-%s" % tab_number)
 
 
@@ -188,7 +190,7 @@ def close_tab(m, tab_number=None):
     if tab_number is None:
         tab_number = parse_words_as_integer(m._words[2:])
 
-    if tab_number != None and tab_number > 0 and tab_number < 10:
+    if tab_number is not None and tab_number > 0 and tab_number < 10:
         press("cmd-%s" % tab_number)
         press("cmd-w")
 
@@ -222,26 +224,85 @@ def code_snippet_naked(m):
     press("tab")
 
 
+@utils.preserve_clipboard
+def duplicate(m):
+    press("cmd-x")
+    press("cmd-v")
+    press("cmd-v")
+
+
+def replace_spaces_with_tabs(line):
+    return line.replace("    ", "\t")
+
+
+def replace_left_of_equals_with_return(m):
+    """
+    replace a line containing: a = b
+    with                     : return b
+    # TODO: create decorator: modify_current_line
+    """
+    # select line
+    press("cmd-l")
+
+    line = utils.copy_selected()
+    if "=" not in line:
+        return
+
+    m = re.search(r"(\s+).*=(.*)", line)
+    print(m.group(1))
+    print(m.group(2))
+    # line = 'return' + line[line.find('=')+1:]
+    line = m.group(1) + "return" + m.group(2) + "\n"
+    print(line)
+
+    utils.paste_text(line)
+    press("up")
+
+
 keymap = {
+    "sprinkle" + optional_numerals: jump_to_bol,
+    # 'spring' + optional_numerals: jump_to_eol_and(jump_to_beginning_of_text),
+    "spring" + numerals: jump_to_bol,
+    "sprinkler" + optional_numerals: jump_to_eol_and(lambda: None),
+    "smear" + optional_numerals: jump_to_eol_and(jump_to_nearly_end_of_line),
+    "trundle": toggle_comments,
+    "trundle" + numerals: jump_to_bol_and(toggle_comments),
+    "jolt": duplicate,
+    "snipline" + optional_numerals: jump_to_bol_and(snipline),
     "cut line" + optional_numerals: cut_line,
     "paste line" + optional_numerals: paste_line,
+    # 'snipple': [Key(atom_hotkey), Key(COMMANDS.DELETE_TO_BOL)],
+    # 'snipper': [Key(atom_hotkey), Key(COMMANDS.DELETE_TO_EOL)],
     "(copy line | clonesert)" + numerals: copy_line,
     "move line" + numerals: move_line,
-    "replace next": Key('cmd-alt-e'),
+    "crew <dgndictation>": find_next,
+    "trail <dgndictation>": find_previous,
+    "replace next": Key("cmd-alt-e"),
+    "shackle": Key("cmd-l"),
+    "selrang" + numerals: select_lines,
+    "shockey": Key("cmd-shift-enter"),
+    "shockoon": Key("cmd-right enter"),
+    "sprinkoon" + numerals: jump_to_eol_and(lambda: press("enter")),
     "peach": Key("cmd-t"),
     "peach <dgndictation>": [Key("cmd-t"), text],
     "peachy <dgndictation>": [Key("cmd-t"), text, Key("enter")],
     "advanced open file": Key("cmd-alt-o"),
     "pain" + numerals: change_pain,
     "tab" + numerals: jump_tab,
+    "goneck": Key("cmd-shift-]"),
+    "gopreev": Key("cmd-shift-["),
     "close tab" + numerals: close_tab,
     "(reopen | unclose) tab": Key("cmd-shift-t"),
     "split pain left": [Key("cmd-k"), Key("left")],
     "split pain right": [Key("cmd-k"), Key("right")],
     "split pain up": [Key("cmd-k"), Key("up")],
     "split pain down": [Key("cmd-k"), Key("down")],
+    "go pain left": [Key("cmd-k"), Key("cmd-left")],
+    "go pain right": [Key("cmd-k"), Key("cmd-right")],
+    "go pain up": [Key("cmd-k"), Key("cmd-up")],
+    "go pain down": [Key("cmd-k"), Key("cmd-down")],
     "(search all files | mark all)": Key("cmd-shift-f"),
-    "case sensitive": Key('alt-cmd-c'),
+    "case sensitive": Key("alt-cmd-c"),
     "command pallet": Key(atom_command_pallet),
     "cursor center": command("center-line:toggle"),
     "cursor top": [command("center-line:toggle"), command("center-line:toggle")],
@@ -260,6 +321,7 @@ keymap = {
     ),
     "select in quotes": command("expand-selection-quotes"),
     "quinn" + "({})".format(" | ".join(snippets.keys())): code_snippet,
+    # '({})'.format(' | '.join(snippets.keys())): code_snippet_naked,
     # python
     "quinn if": ["if :", Key("left")],
     "quinn to do": "# TODO: ",
@@ -276,7 +338,7 @@ keymap = {
     "go to definition": command("autocomplete-python:go-to-definition"),
     "show usages": command("autocomplete-python:show-usages"),
     "complete arguments": command("autocomplete-python:complete-arguments"),
-    "rename": command("autocomplete-python:rename"),
+    "python rename": command("autocomplete-python:rename"),
     "override method": command("autocomplete-python:override-method"),
     # symbols-view
     "go to symbol": command("symbols-view:toggle-file-symbols"),
@@ -296,6 +358,9 @@ keymap = {
     "remove project": command("tree view remove project folder"),
     # blacken
     "blacken": command("atom black blacken"),
+    # reflow
+    "reflow": Key("cmd-alt-q"),
+    "replace [left of] equals [with] return": replace_left_of_equals_with_return,
 }
 
 ctx.keymap(keymap)

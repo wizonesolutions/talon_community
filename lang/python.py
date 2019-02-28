@@ -1,20 +1,20 @@
 from talon.voice import Context, Key
 
+from ..utils import is_filetype
 
-def python(app, win):
-    return win.doc.endswith(".py")
+FILETYPES = (".py",)
 
-
-ctx = Context("python", func=python)
+ctx = Context("python", func=is_filetype(FILETYPES))
+# ctx = Context("python")
 
 ctx.keymap(
     {
         "state any": ["any()", Key("left")],
-        "dunder in it": "__init__",  # TODO: move into python file
+        "dunder in it": "__init__",
         "dot pie": ".py",
+        "dot pipe": ".py",
     }
 )
-
 
 # TODO: defined function
 # TODO: defined class

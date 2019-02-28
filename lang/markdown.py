@@ -3,12 +3,21 @@ from os import system
 from talon.voice import Context, Key, press, Str
 
 from ..apps.atom import jump_to_bol
-from ..utils import optional_numerals
+from ..utils import optional_numerals, is_filetype
+
+
+FILETYPES = (".md",)
+
+ctx = Context("markdown", func=is_filetype(FILETYPES))
 
 
 def markdown_complete(m):
     if len(m._words) > 2:
         jump_to_bol(m)
+    else:
+        # lefty
+        press("cmd-left")
+
     press("right")
     press("right")
     press("right")
@@ -19,14 +28,16 @@ def markdown_complete(m):
 def markdown_incomplete(m):
     if len(m._words) > 2:
         jump_to_bol(m)
+    else:
+        # lefty
+        press("cmd-left")
+
     press("right")
     press("right")
     press("right")
     press("delete")
     Str(" ")(None)
 
-
-ctx = Context("markdown")
 
 keymap = {
     "markdown check": "- [ ] ",

@@ -1,13 +1,14 @@
 from talon.voice import Word, Key, Context, Str, press
 from talon_init import TALON_HOME, TALON_PLUGINS, TALON_USER
+from talon import ctrl, ui
 import string
 
-from ..utils import numerals, parse_words, text
+from ..utils import numerals, parse_words, text, is_in_bundles
+from ..bundle_groups import TERMINAL_BUNDLES
 
 # TODO: move application specific commands into their own files: apt-get, etc
 
-terminals = ("com.apple.Terminal", "com.googlecode.iterm2")
-ctx = Context("terminal", func=lambda app, win: any(t in app.bundle for t in terminals))
+ctx = Context("terminal", func=is_in_bundles(TERMINAL_BUNDLES))
 
 mapping = {"semicolon": ";", r"new-line": "\n", r"new-paragraph": "\n\n"}
 
@@ -29,9 +30,12 @@ def dash(m):
         press("-")
         Str("-".join(words))(None)
 
+
 KUBERNETES_PREFIX = "(cube | cube control)"
 
 keymap = {
+    "lefty": Key("ctrl-a"),
+    "ricky": Key("ctrl-e"),
     "(pain new | split vertical)": Key("cmd-d"),
     # talon
     "tail talon": "tail -f .talon/talon.log",
@@ -61,10 +65,11 @@ keymap = {
     ],
     "(ls | run ellis | run alice)": "ls\n",
     "(la | run la)": "ls -la\n",
-    "durrup": "cd ..; ls\n",
+    # "durrup": "cd ..; ls\n",
     "go back": "cd -\n",
     "dash <dgndictation> [over]": dash,
     "pseudo": "sudo ",
+    "redo pseudo": [Key("up"), Key("ctrl-a"), "sudo ", Key("enter")],
     "shell C H mod": "chmod ",
     "shell clear": [Key("ctrl-c"), "clear\n"],
     "shell copy [<dgndictation>]": ["cp ", text],
@@ -155,23 +160,26 @@ keymap = {
     KUBERNETES_PREFIX + "help": "kubectl help ",
     KUBERNETES_PREFIX + "plugin": "kubectl plugin ",
     KUBERNETES_PREFIX + "version": "kubectl version ",
+    KUBERNETES_PREFIX
+    + "shell": ["kubectl exec -it  -- /bin/bash"]
+    + [Key("left")] * 13,
     # conda
     "conda install": "conda install ",
     "conda list": "conda list ",
     # tmux
     "T mux new session": "tmux ",
-    "T mux scroll": [Key('ctrl-b'), Key('[')],
+    "T mux scroll": [Key("ctrl-b"), Key("[")],
     # other
     "shell make": "make\n",
     "shell jobs": "jobs\n",
 }
 
-for action in ('get', 'delete', 'describe'):
-    for object in ('nodes', 'jobs', 'pods', 'namespaces', ''):
+for action in ("get", "delete", "describe"):
+    for object in ("nodes", "jobs", "pods", "namespaces", "services", ""):
         if object:
-            object = object + ' '
-        command = f'{KUBERNETES_PREFIX} {action} {object}'
-        typed = f'kubectl {action} {object}'
+            object = object + " "
+        command = f"{KUBERNETES_PREFIX} {action} {object}"
+        typed = f"kubectl {action} {object}"
         keymap.update({command: typed})
 
 keymap.update({"pain " + str(i): Key("alt-" + str(i)) for i in range(10)})
@@ -179,6 +187,15 @@ keymap.update({"pain " + str(i): Key("alt-" + str(i)) for i in range(10)})
 ctx.keymap(keymap)
 
 
+def shell_rerun(m):
+    # switch_app(name='iTerm2')
+    app = ui.apps(bundle="com.googlecode.iterm2")[0]
+    ctrl.key_press("up", app=app)
+    ctrl.key_press("enter", app=app)
+
+
+global_ctx = Context("global_terminal")
+global_ctx.keymap({"shell rerun": shell_rerun})
 # module.exports = {
 #   permissions: "chmod "
 #   access: "chmod "
