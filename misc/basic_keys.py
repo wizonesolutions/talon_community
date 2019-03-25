@@ -59,6 +59,7 @@ symbols = {
 }
 modifiers = {
     "command": "cmd",
+    "calm": "cmd",
     "control": "ctrl",
     "shift": "shift",
     "alt": "alt",
