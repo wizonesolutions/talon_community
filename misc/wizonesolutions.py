@@ -1,12 +1,17 @@
 from talon.voice import Context, Key, app
-from ..utils import capitalized_word, spoken_text
+from ..utils import capitalized_word, spoken_text, text
 from .window_management import grid
 from .jetbrains import idea
 from talon_plugins import speech
+from talon import debug, ui, tap, app
+from talon.engine import engine
+import os
+
 
 ctx = Context('wizonesolutions')
 ctx.keymap({
     'awesome <dgnwords>':          capitalized_word,
+    "say <dgndictation> [over]":   text,
     'speak <dgndictation> [over]': spoken_text,
     "more <dgndictation> [over]":  [" ", spoken_text],
 
@@ -33,6 +38,7 @@ ctx.keymap({
 
     # jetbrains
     'open file':                   idea('action GotoFile'),
+
 })
 
 
@@ -41,4 +47,17 @@ def disable_speech_on_start():
     speech.set_enabled(False)
 
 
+# app.register('startup', lambda: ui.launch(bundle='com.dragon.dictate'))
+# app.register('launch', lambda: ui.launch(bundle='com.dragon.dictate'))
 app.register('launch', disable_speech_on_start)
+
+
+def on_key(typ, e):
+    if e == 'f2':
+        os.popen(f'sample speechd > /tmp/speechd.sample')
+        print(engine.status())
+        print(debug.dump_threads())
+        print(vars(talon.voice.talon))
+        e.block()
+
+tap.register(tap.KEY|tap.HOOK, on_key)
