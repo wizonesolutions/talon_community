@@ -1,5 +1,9 @@
-from talon import ui, tap
+import time
+
+from talon import ui
 from talon.voice import Context
+
+from ..config import config
 
 """Provides a voice-driven window management application implemented in Talon.
 
@@ -10,10 +14,17 @@ Todo:
 """
 
 
+def sorted_screens():
+    """
+    return screens sorted by their left most edge, from left to right
+    """
+    return sorted(ui.screens(), key=lambda screen: screen.visible_rect.left)
+
+
 def move_screen(off):
     win = ui.active_window()
     src_screen = win.screen
-    screens = ui.screens()
+    screens = sorted_screens()
     dst_screen = screens[(screens.index(src_screen) + off) % len(screens)]
     if src_screen == dst_screen:
         return
@@ -21,16 +32,28 @@ def move_screen(off):
     src = src_screen.visible_rect
     dst = dst_screen.visible_rect
     old = win.rect
-    win.rect = ui.Rect(
-        dst.left + (old.left - src.left) / src.width * dst.width,
-        dst.top + (old.top - src.top) / src.height * dst.height,
-        old.width / src.width * dst.width,
-        old.height / src.height * dst.height,
-    )
+
+    change_screen_mode = config.get("window_management.change_screen_mode", "same")
+    if change_screen_mode == "same":
+        new_rectangle = ui.Rect(
+            dst.left + (old.left - src.left) / src.width * dst.width,
+            dst.top + (old.top - src.top) / src.height * dst.height,
+            old.width / src.width * dst.width,
+            old.height / src.height * dst.height,
+        )
+    elif change_screen_mode == "full":
+        new_rectangle = dst
+    else:
+        raise ValueError("{} screen mode not understood."(change_screen_mode))
+
+    win.rect = new_rectangle
+    time.sleep(0.25)
+    win.rect = new_rectangle
+    time.sleep(0.25)
+    win.rect = new_rectangle
 
 
 def resize_window(x, y, w, h):
-    print("Resizing: ", x, y, w, h)
     win = ui.active_window()
     rect = win.screen.visible_rect.copy()
     rect.x += rect.width * x
@@ -87,7 +110,7 @@ def previous_screen(m):
     move_screen(-1)
 
 
-ctx = Context("window_snap")
+ctx = Context("window_management")
 ctx.keymap(
     {
         "snap left": grid(1, 1, 2, 1),
@@ -101,5 +124,7 @@ ctx.keymap(
         "snap screen": grid(1, 1, 1, 1),
         "snap next": next_screen,
         "snap last": previous_screen,
+        "window next screen": next_screen,
+        "window preev screen": previous_screen,
     }
 )

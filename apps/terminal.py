@@ -1,9 +1,12 @@
+import time
+import json
+
 from talon.voice import Word, Key, Context, Str, press
 from talon_init import TALON_HOME, TALON_PLUGINS, TALON_USER
-from talon import ctrl, ui
+from talon import ctrl, ui, resource
 import string
 
-from ..utils import numerals, parse_words, text, is_in_bundles
+from ..utils import numerals, parse_words, text, is_in_bundles, insert
 from ..bundle_groups import TERMINAL_BUNDLES
 
 # TODO: move application specific commands into their own files: apt-get, etc
@@ -33,15 +36,62 @@ def dash(m):
 
 KUBERNETES_PREFIX = "(cube | cube control)"
 
+directory_shortcuts = {
+    "talon home": TALON_HOME,
+    "talon user": TALON_USER,
+    "talon plug-ins": TALON_PLUGINS,
+    "talon community": "~/.talon/user/talon_community",
+}
+
+
+def cd_directory_shortcut(m):
+    directory = directory_shortcuts[m[1]]
+    insert(f"cd {directory}; ls")
+    for _ in range(4):
+        press("left")
+
+
+try:
+    servers = json.load(resource.open("servers.json"))
+except Exception as e:
+    print(f"error opening servers.json: {e}")
+    servers = {}
+
+
+def get_server(m):
+    return servers[" ".join(m["global_terminal.servers"])]
+
+
+def mosh_servers(m):
+    insert(f"mosh {get_server(m)}")
+
+
+def ssh_servers(m):
+    insert(f"ssh {get_server(m)}")
+
+
+def name_servers(m):
+    insert(get_server(m))
+
+
+def ssh_copy_id_servers(m):
+    insert(f"mosh {get_server(m)}")
+
+
+def new_server(m):
+    press("cmd-d")
+    insert(f"ssh {get_server(m)}")
+    press("enter")
+
+
 keymap = {
     "lefty": Key("ctrl-a"),
     "ricky": Key("ctrl-e"),
     "(pain new | split vertical)": Key("cmd-d"),
+    "new {global_terminal.servers}": new_server,
     # talon
-    "tail talon": "tail -f .talon/talon.log",
-    "cd talon home": "cd {}".format(TALON_HOME),
-    "cd talon user": "cd {}".format(TALON_USER),
-    "cd talon plugins": "cd {}".format(TALON_PLUGINS),
+    "tail talon": "tail -f ~/.talon/talon.log",
+    "talon reple": "~/.talon/bin/repl",
     # some habits die hard
     "troll char": Key("ctrl-c"),
     "reverse": Key("ctrl-r"),
@@ -63,13 +113,19 @@ keymap = {
         Key("left"),
         text,
     ],
+    "cd {terminal.directory_shortcuts}": cd_directory_shortcut,
     "(ls | run ellis | run alice)": "ls\n",
     "(la | run la)": "ls -la\n",
     # "durrup": "cd ..; ls\n",
     "go back": "cd -\n",
     "dash <dgndictation> [over]": dash,
     "pseudo": "sudo ",
-    "redo pseudo": [Key("up"), Key("ctrl-a"), "sudo ", Key("enter")],
+    "(redo pseudo | pseudo [make me a] sandwich)": [
+        Key("up"),
+        Key("ctrl-a"),
+        "sudo ",
+        Key("enter"),
+    ],
     "shell C H mod": "chmod ",
     "shell clear": [Key("ctrl-c"), "clear\n"],
     "shell copy [<dgndictation>]": ["cp ", text],
@@ -89,9 +145,16 @@ keymap = {
     "shell cat [<dgndictation>]": ["cat ", text],
     "shell X args [<dgndictation>]": ["xargs ", text],
     "shell mosh": "mosh ",
+    "shell mosh {global_terminal.servers}": mosh_servers,
+    "shell SSH {global_terminal.servers}": ssh_servers,
+    # "shell server {terminal.servers}": name_servers,
+    "shell SSH copy id {global_terminal.servers}": ssh_copy_id_servers,
     "shell M player": "mplayer ",
     "shell nvidia S M I": "nvidia-smi ",
     "shell R sync": "./src/dotfiles/sync_rsync ",
+    "shell tail": "tail ",
+    "shell tail follow": "tail -f ",
+    "shall count lines": "wc -l ",
     # python
     "create virtual environment": ["virtualenv -p python3 venv", Key("enter")],
     "activate virtual environment": [
@@ -104,8 +167,9 @@ keymap = {
     "apt get update": "apt-get update ",
     "apt get upgrade": "apt-get upgrade ",
     # Tools
-    "(grep | grip)": ["grep  .", Key("left left")],
-    "gripper": ["grep -r  .", Key("left left")],
+    # "(grep | grip)": ["grep  .", Key("left left")],
+    "(grep | grip)": "grep ",
+    # "gripper": ["grep -r  .", Key("left left")],
     "pee socks": "ps aux ",
     "vi": "vi ",
     # python
@@ -175,27 +239,34 @@ keymap = {
 }
 
 for action in ("get", "delete", "describe"):
-    for object in ("nodes", "jobs", "pods", "namespaces", "services", ""):
+    for object in ("nodes", "jobs", "pods", "namespaces", "services", "events", ""):
         if object:
             object = object + " "
         command = f"{KUBERNETES_PREFIX} {action} {object}"
         typed = f"kubectl {action} {object}"
         keymap.update({command: typed})
 
-keymap.update({"pain " + str(i): Key("alt-" + str(i)) for i in range(10)})
+keymap.update({"(pain | bang) " + str(i): Key("alt-" + str(i)) for i in range(10)})
 
 ctx.keymap(keymap)
+ctx.set_list("directory_shortcuts", directory_shortcuts.keys())
+# ctx.set_list("servers", servers.keys())
 
 
 def shell_rerun(m):
     # switch_app(name='iTerm2')
     app = ui.apps(bundle="com.googlecode.iterm2")[0]
+    ctrl.key_press("c", ctrl=True, app=app)
+    time.sleep(0.05)
     ctrl.key_press("up", app=app)
     ctrl.key_press("enter", app=app)
 
 
 global_ctx = Context("global_terminal")
-global_ctx.keymap({"shell rerun": shell_rerun})
+global_ctx.keymap(
+    {"shell rerun": shell_rerun, "shell server {global_terminal.servers}": name_servers}
+)
+global_ctx.set_list("servers", servers.keys())
 # module.exports = {
 #   permissions: "chmod "
 #   access: "chmod "

@@ -79,8 +79,12 @@ def select_text_to_right_of_cursor(m):
 alphanumeric = "abcdefghijklmnopqrstuvwxyz0123456789_"
 
 
-def word_neck(m):
-    word_index = extract_num_from_m(m)
+def big_word_neck(m):
+    return word_neck(m, valid_characters=set(alphanumeric) | set("/\\-_.>=<"))
+
+
+def word_neck(m, valid_characters=alphanumeric):
+    word_index = extract_num_from_m(m, 1)
 
     old = clip.get()
     press("shift-right", wait=2000)
@@ -97,7 +101,7 @@ def word_neck(m):
     text_right = clip.get().lower()
     clip.set(old)
 
-    is_word = [character in alphanumeric for character in text_right]
+    is_word = [character in valid_characters for character in text_right]
     word_count = 1
     i = 0
     while i < (len(is_word) - 1) and not is_word[i]:
@@ -129,8 +133,12 @@ def word_neck(m):
         press("shift-right")
 
 
-def word_prev(m):
-    word_index = extract_num_from_m(m)
+def big_word_prev(m):
+    return word_prev(m, valid_characters=set(alphanumeric) | set("/\\-_.>=<"))
+
+
+def word_prev(m, valid_characters=alphanumeric):
+    word_index = extract_num_from_m(m, 1)
 
     old = clip.get()
     press("shift-right", wait=2000)
@@ -149,7 +157,7 @@ def word_prev(m):
 
     text_right = list(reversed(text_right))
 
-    is_word = [character in alphanumeric for character in text_right]
+    is_word = [character in valid_characters for character in text_right]
     word_count = 1
     i = 0
     while i < (len(is_word) - 1) and not is_word[i]:
@@ -189,7 +197,7 @@ ctx.keymap(
         "(go word left | fame | peg)": Key("alt-left"),
         "(go word right | fish | fran)": Key("alt-right"),
         "(go line after end | derek)": Key("cmd-right space"),
-        "(go line start | lefty)": Key("ctrl-a cmd-left"),
+        "(go line start | lefty)": Key("cmd-left"),
         "(go line end | ricky)": Key("cmd-right"),
         "(go line before end | smear)": Key("cmd-right left"),
         # insertions
@@ -203,9 +211,7 @@ ctx.keymap(
         "(delete around this | slurp)": Key("backspace delete"),
         "(delete line left | snip left | snipple)": Key("shift-cmd-left delete"),
         "(delete line right | snip right | snipper)": Key("shift-cmd-right delete"),
-        "(delete [this] line | snipline )": Key(
-            "shift-cmd-right delete delete ctrl-a cmd-left"
-        ),
+        "(delete [this] line)": Key("shift-cmd-right delete delete ctrl-a cmd-left"),
         "(delete word left | trough | steffi | carmex)": Key("alt-backspace"),
         "(delete word right | stippy | kite)": Key("alt-delete"),
         "(delete [this] word | slurpies)": Key("alt-backspace alt-delete"),
@@ -220,10 +226,12 @@ ctx.keymap(
         "(select all | olly | ali)": Key("cmd-a"),
         "(select left | shrim | shlicky)": Key("shift-left"),
         "(select right | shrish | shricky)": Key("shift-right"),
-        "(select word number {generic_editor.n}+ above | wordpreev {generic_editor.n}+)": word_prev,
-        "(select word number {generic_editor.n}+ below | wordneck {generic_editor.n}+)": word_neck,
-        "(select word left | scrish)": Key("alt-shift-left"),
-        "(select word right | scram)": Key("alt-shift-right"),
+        "(select word number {generic_editor.n}* above | wordpreev {generic_editor.n}*)": word_prev,
+        "big word preev {generic_editor.n}*": big_word_prev,
+        "big word neck {generic_editor.n}*": big_word_neck,
+        "(select word number {generic_editor.n}* below | wordneck {generic_editor.n}*)": word_neck,
+        "(select word left | scram)": Key("alt-shift-left"),
+        "(select word right | scrish)": Key("alt-shift-right"),
         "(select line left | lecksy)": Key("cmd-shift-left"),
         "(select line right | ricksy)": Key("cmd-shift-right"),
     }

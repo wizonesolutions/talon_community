@@ -1,8 +1,8 @@
 import string
 import collections
 
-from talon import clip
-from talon.voice import Str, press
+from talon import clip, resource
+from talon.voice import Context, Str, press
 from time import sleep
 import json
 import os
@@ -10,13 +10,16 @@ import os
 from .bundle_groups import TERMINAL_BUNDLES, FILETYPE_SENSITIVE_BUNDLES
 
 VIM_IDENTIFIER = "(Vim)"
+INCLUDE_TEENS_IN_NUMERALS = False
+INCLUDE_TENS_IN_NUMERALS = False
 
-mapping = json.load(open(os.path.join(os.path.dirname(__file__), "replace_words.json")))
+# mapping = json.load(open(os.path.join(os.path.dirname(__file__), "replace_words.json")))
+mapping = json.load(resource.open("replace_words.json"))
 mappings = collections.defaultdict(dict)
 for k, v in mapping.items():
     mappings[len(k.split(" "))][k] = v
 
-punctuation = set(".,-!?")
+punctuation = set(".,-!?/")
 
 
 def local_filename(file, name):
@@ -76,7 +79,7 @@ def parse_words(m, natural=False):
 def join_words(words, sep=" "):
     out = ""
     for i, word in enumerate(words):
-        if i > 0 and word not in punctuation:
+        if i > 0 and word not in punctuation and out[-1] not in ("/-"):
             out += sep
         out += str(word)
     return out
@@ -88,6 +91,10 @@ def insert(s):
 
 def text(m):
     insert(join_words(parse_words(m)).lower())
+
+
+def snake_text(m):
+    insert(join_words(parse_words(m), sep="_").lower())
 
 
 def spoken_text(m):
@@ -102,7 +109,9 @@ def sentence_text(m):
 
 def word(m):
     try:
-        text = join_words(list(map(parse_word, m.dgnwords[0]._words)))
+        text = join_words(
+            map(lambda w: parse_word(remove_dragon_junk(w)), m.dgnwords[0]._words)
+        )
         insert(text.lower())
     except AttributeError:
         pass
@@ -114,12 +123,12 @@ def capitalized_word(m):
     except AttributeError:
         pass
 
-def surround(by):
+def surround(left_surrounder, right_surrounder=None):
     def func(i, word, last):
         if i == 0:
-            word = by + word
+            word = left_surrounder + word
         if last:
-            word += by
+            word += right_surrounder or left_surrounder
         return word
 
     return func
@@ -134,9 +143,13 @@ def rot13(i, word, _):
     return out
 
 
-numeral_map = dict((str(n), n) for n in range(0, 20))
-for n in range(20, 101, 10):
-    numeral_map[str(n)] = n
+numeral_map = dict((str(n), n) for n in range(0, 10))
+if INCLUDE_TEENS_IN_NUMERALS:
+    for n in range(10, 20, 1):
+        numeral_map[str(n)] = n
+if INCLUDE_TENS_IN_NUMERALS:
+    for n in range(20, 101, 10):
+        numeral_map[str(n)] = n
 for n in range(100, 1001, 100):
     numeral_map[str(n)] = n
 for n in range(1000, 10001, 1000):
@@ -145,8 +158,11 @@ numeral_map["oh"] = 0  # synonym for zero
 numeral_map["and"] = None  # drop me
 
 numeral_list = sorted(numeral_map.keys())
-numerals = " (" + " | ".join(numeral_list) + ")+"
-optional_numerals = " (" + " | ".join(numeral_list) + ")*"
+
+ctx = Context("n")
+ctx.set_list("all", numeral_list)
+numerals = " {n.all}+"
+optional_numerals = " {n.all}*"
 
 
 def text_to_number(words):
@@ -156,8 +172,7 @@ def text_to_number(words):
     result = 0
     factor = 1
     for word in reversed(words):
-        print("{} {} {}".format(result, factor, word))
-        if word not in numerals:
+        if word not in numeral_list:
             raise Exception("not a number: {}".format(words))
 
         number = numeral_map[word]
@@ -170,23 +185,6 @@ def text_to_number(words):
         else:
             result = result + factor * number
         factor = (10 ** len(str(number))) * factor
-    return result
-
-
-def m_to_number(m):
-    tmp = [str(s).lower() for s in m._words]
-    words = [parse_word(word) for word in tmp]
-
-    result = 0
-    factor = 1
-    for word in reversed(words):
-        if word not in numerals:
-            # we consumed all the numbers and only the command name is left.
-            break
-
-        result = result + factor * int(numeral_map[word])
-        factor = 10 * factor
-
     return result
 
 
@@ -324,9 +322,22 @@ def is_filetype(extensions=()):
     return matcher
 
 
-def extract_num_from_m(m):
+def extract_num_from_m(m, default=ValueError):
     # loop identifies numbers in any message
     number_words = [w for w in m._words if w in numeral_list]
     if len(number_words) == 0:
-        raise ValueError("No number found")
+        if default is ValueError:
+            raise ValueError("No number found")
+        else:
+            return default
     return text_to_number(number_words)
+
+
+# Handle ( x | y ) syntax in dicts used to create keymaps indirectly.
+# Do not be deceived, this is not real Talon syntax and [] wont work
+def normalise_keys(dict):
+    normalised_dict = {}
+    for k, v in dict.items():
+        for cmd in k.strip("() ").split("|"):
+            normalised_dict[cmd.strip()] = v
+    return normalised_dict
