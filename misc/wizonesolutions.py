@@ -6,6 +6,7 @@ from talon_plugins import speech
 from talon import debug, ui, tap, app
 from talon.engine import engine
 import os
+import talon.voice
 
 
 ctx = Context('wizonesolutions')
@@ -40,6 +41,8 @@ ctx.keymap({
     'open file':                   idea('action GotoFile'),
 
 })
+
+ctx.vocab = ['Xdebug']
 
 
 def disable_speech_on_start():
