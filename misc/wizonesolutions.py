@@ -8,7 +8,6 @@ from talon.engine import engine
 import os
 import talon.voice
 
-
 ctx = Context('wizonesolutions')
 ctx.keymap({
     'awesome <dgnwords>':          capitalized_word,
@@ -40,6 +39,7 @@ ctx.keymap({
     # jetbrains
     'open file':                   idea('action GotoFile'),
 
+    'window hide':                 Key('cmd-h'),
 })
 
 ctx.vocab = ['Xdebug']
