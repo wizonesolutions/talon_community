@@ -42,7 +42,12 @@ ctx.keymap({
     'window hide':                 Key('cmd-h'),
 })
 
-ctx.vocab = ['Xdebug']
+ctx.vocab = [
+    'Xdebug',
+    'Ergorest',
+    'Ergorests',
+    'RollerMouse',
+]
 
 
 def disable_speech_on_start():
