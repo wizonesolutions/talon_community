@@ -68,4 +68,5 @@ def on_key(typ, e):
         print(vars(talon.voice.talon))
         e.block()
 
-tap.register(tap.KEY|tap.HOOK, on_key)
+
+tap.register(tap.KEY | tap.HOOK, on_key)
