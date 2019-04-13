@@ -19,10 +19,9 @@ ctx.keymap({
     'run cat':                     'cat ',
     'fast forward git':            'git pull --ff-only',
     'code tag':                    '<code></code>',
-    'sparrow':                     '=>',
-    'op sparrow':                  ' => ',
+    'invoke':                      '->',
     'code tick':                   '```',
-    'state is set':                'isset',
+    'op is set':                   'isset',
 
     'D dev S S H':                 ['ddev ssh', Key('enter')],
     'drewsh':                      'drush ',
@@ -47,6 +46,7 @@ ctx.vocab = [
     'Ergorest',
     'Ergorests',
     'RollerMouse',
+    'Vim',
 ]
 
 
