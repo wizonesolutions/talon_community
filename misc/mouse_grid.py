@@ -393,9 +393,10 @@ def draw_centered_text(text, x, y, canvas):
 
 def active_screen():
     # choose correct screen based off of active window
-    if hasattr(ui.active_window(), 'screen'):
+    try:
         return ui.active_window().screen
-    return False
+    except ui.UIErr:
+        return {}
 
 
 def is_same_screen(screen1, screen2):
@@ -407,8 +408,13 @@ destination_screen = {}
 
 def set_screen(event, arg):
     global destination_screen
-    if event in ('win_open', 'win_close'):
-        destination_screen = active_screen()
+    if event == 'win_focus':
+        destination_screen = arg.screen
+    if event == 'app_activate':
+        try:
+            destination_screen = arg.active_window.screen
+        except ui.UIErr:
+            destination_screen = {}
 
 
 # Set window on window changes (so we'll actually have a window).
