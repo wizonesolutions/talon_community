@@ -47,6 +47,7 @@ ctx.vocab = [
     'Ergorests',
     'RollerMouse',
     'Vim',
+    'Behat'
 ]
 
 
