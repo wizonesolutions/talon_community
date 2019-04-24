@@ -186,7 +186,7 @@ def word_prev(m, valid_characters=alphanumeric):
 ctx.keymap(
     {
         # meta
-        "(save it | sage)": Key("cmd-s"),
+        "save it": Key("cmd-s"),
         "(undo it | dizzle)": Key("cmd-z"),
         "(redo it | rizzle)": Key("cmd-shift-z"),
         # clipboard
