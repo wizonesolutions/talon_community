@@ -2,7 +2,7 @@ from talon.engine import engine
 from talon import ui, voice, tap
 import os
 
-SAMPLE_DRAGON_KEY = "f1"
+SAMPLE_DRAGON_KEY = ""
 
 # Note: order of handlers matters
 APPLIED_HANDLERS = (
@@ -90,7 +90,8 @@ def on_key(typ, e):
         e.block()
 
 
-tap.register(tap.KEY | tap.HOOK, on_key)
+if SAMPLE_DRAGON_KEY != "":
+    tap.register(tap.KEY | tap.HOOK, on_key)
 
 # from talon import canvas, ui
 #
